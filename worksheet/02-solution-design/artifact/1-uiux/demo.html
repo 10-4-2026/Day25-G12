@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airline AI Assistant - Responsible Design Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #003580;
+            --primary-light: #e6f0ff;
+            --secondary: #febb02;
+            --danger: #d93025;
+            --success: #1e8e3e;
+            --text-main: #202124;
+            --text-sub: #5f6368;
+            --bg-chat: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #eef2f7;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--bg-chat);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsible AI Components */
+        .policy-card {
+            margin-top: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .policy-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .policy-header {
+            padding: 10px 15px;
+            background: #f1f3f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .status-verified {
+            background: #e6f4ea;
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: #fef7e0;
+            color: #b06000;
+        }
+
+        .policy-content {
+            padding: 15px;
+        }
+
+        .policy-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+
+        .policy-link {
+            display: block;
+            margin-top: 10px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .policy-link:hover {
+            text-decoration: underline;
+        }
+
+        .agent-escalation {
+            background: #fff3f3;
+            border: 1px dashed var(--danger);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .agent-escalation p {
+            margin: 0 0 10px 0;
+            font-size: 0.85rem;
+            color: var(--danger);
+            font-weight: 500;
+        }
+
+        .btn-escalate {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-area input {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .input-area button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="chat-container">
+        <div class="header">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Airlines" alt="Bot">
+            <div>
+                <h2>Day25 G12 AI</h2>
+                <p>Hỗ trợ trực tuyến 24/7</p>
+            </div>
+        </div>
+
+        <div class="messages">
+            <div class="message bot-message">
+                Xin chào! Tôi có thể giúp gì cho quý khách về hành trình bay hôm nay không ạ?
+            </div>
+
+            <div class="message user-message">
+                Tôi muốn hỏi về chính sách giảm giá tang lễ, người thân tôi mới mất tôi cần đổi vé gấp.
+            </div>
+
+            <div class="message bot-message">
+                Tôi xin chia buồn sâu sắc cùng quý khách. Về chính sách hỗ trợ hành khách có người thân qua đời
+                (Bereavement Policy), đây là thông tin chính thức từ hãng:
+
+                <!-- VERIFIED POLICY CARD -->
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <span>THÔNG TIN CHÍNH SÁCH</span>
+                        <div class="status-badge status-verified">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            NGUỒN XÁC THỰC
+                        </div>
+                    </div>
+                    <div class="policy-content">
+                        <div class="policy-title">Hỗ trợ giảm phí đổi vé</div>
+                        <p style="margin: 5px 0; font-size: 0.85rem; color: #555;">
+                            Giảm 50% phí thay đổi và miễn phí chênh lệch giá vé cho hành khách có giấy chứng tử hợp lệ.
+                        </p>
+                        <a href="#" class="policy-link">Xem chi tiết văn bản gốc (PDF) →</a>
+                    </div>
+                </div>
+
+                <!-- ESCALATION TRIGGER -->
+                <div class="agent-escalation">
+                    <p>Đây là tình huống khẩn cấp và nhạy cảm. Quý khách có muốn gặp nhân viên hỗ trợ ngay không?</p>
+                    <button class="btn-escalate">Gặp nhân viên hỗ trợ (Ưu tiên)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" placeholder="Nhập câu hỏi tại đây...">
+            <button>→</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
